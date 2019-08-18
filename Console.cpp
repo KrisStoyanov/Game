@@ -1,7 +1,4 @@
 ﻿#include "Console.h"
-int x = 9;
-int y = 9;
-int Coins = 0;
 Console::Console()
 {
 	
@@ -10,12 +7,12 @@ Console::~Console()
 {
 }
 
-void Console::add(const Entity * entity)
+void Console::add(Entity * entity)
 {
 	entities.push_back(entity->clone());
 }
 
-const Entity * Console::getAt(int index)const 
+Entity * Console::getAt(int index)
 {
 	return entities[index];
 }

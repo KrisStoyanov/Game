@@ -11,8 +11,10 @@ public:
 	Boss(const Type enumtype, int locx, int locy);
 	Type getenumType()const ;
 	void Attack(Entity &entity);
-	const Entity* clone()const ;
+	Entity* clone()const ;
 	void Move(int x, int y);
 	void HuntPlayer(Entity &entity);
+	void Spawn();
+	bool isAlive();
 };
 

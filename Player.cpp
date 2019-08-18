@@ -2,76 +2,106 @@
 //    O     
 //  0/|\/   
 //   / \    
+int Coins;
 Player::Player()
 {
 }
 Player::~Player()
 {
 }
+void Draw(int x, int y)
+{
+	map[x - 1][y] = 'O';
+	map[x][y] = '|';
+	map[x][y - 1] = '/';
+	map[x][y + 1] = char(92);
+	map[x + 1][y + 1] = char(92);
+	map[x + 1][y - 1] = '/';
+	map[x][y - 2] = '0';
+	map[x][y + 2] = '/';
+}
+void EmptySpaceP(int x, int y)
+{
+	map[x][y - 2] = ' ';
+	map[x][y - 1] = ' '; map[x + 1][y - 1] = ' ';
+	map[x - 1][y] = ' ';   map[x][y] = ' ';
+	map[x][y + 1] = ' '; map[x + 1][y + 1] = ' ';
+	map[x][y + 2] = ' ';
+}
+void clearAround(int x, int y)
+{
+	map[x][y - 1] = ' '; map[x + 1][y - 1] = ' ';
+	map[x - 1][y] = ' '; map[x][y] = ' ';
+	map[x][y + 1] = ' '; map[x + 1][y + 1] = ' ';
+	map[x + 1][y] = ' '; map[x - 1][y + 1] = ' '; map[x - 1][y - 1] = ' ';
+
+}
+bool CanMoveP(int x, int y, int MX,int MY)
+{
+	if (MX ==1)//moving down
+	{
+		if (map[x + 2][y] == ' ' &&
+			map[x + 2][y + 2] == ' ' &&
+			map[x + 2][y - 2] == ' ' &&
+			map[x + 2][y - 1] == ' ' &&
+			map[x + 2][y + 1] == ' ' 
+			) return true; else return false;
+	}
+	else if(MX==-1)//moving up 
+	{
+		if (map[x - 2][y] == ' ' &&
+			map[x - 2][y - 1] == ' ' &&
+			map[x - 2][y - 2] == ' ' &&
+			map[x - 2][y + 1] == ' ' &&
+			map[x - 2][y + 2] == ' '
+			) return true; else  return false;
+	}
+	if (MY==1)//moving right
+	{
+		if (map[x][y + 3] == ' ' &&
+			map[x + 1][y + 3] == ' ' &&
+			map[x - 1][y + 3] == ' '
+			) return true; else return false;
+	}
+	else if(MY == -1) //moving left 
+	{
+		if (map[x][y - 3] == ' ' &&
+			map[x + 1][y - 3] == ' ' &&
+			map[x - 1][y - 3] == ' '
+			) return true; else  return false;
+	}
+}
 Player::Player(const Type enumtype, int locx, int locy):Entity(enumtype, locx,locy)
 {
-	damage = 50;
-	health = 1000;
+	setDMG(50);
+	setHP(1000);
 }
 void Player::Move(int X, int Y)
 {
-	EmptySpace(locX,locY);
+	if (CanMoveP(locX,locY, X ,Y))
+	{
+	EmptySpaceP(locX,locY);
 	this->locX = locX + X;
 	this->locY = locY + Y;
 	Draw(locX, locY);
-}
-bool CanMove(int x, int y, int MX,int MY)
-{
-	if (MX > 0)//moving down
-	{
-		if (map[x + 1][y] == ' ' &&
-			map[x + 1][y + 2] == ' ' &&
-			map[x + 1][y - 2] == ' ' &&
-			map[x + 2][y - 1] == ' ' &&
-			map[x + 2][y + 1] == ' ' &&
-			map[x + 2][y] == ' '
-			) return true;
-	}
-	else//moving up 
-	{
-		if (map[x - 2][y] == ' ' &&
-			map[x - 1][y - 1] == ' ' &&
-			map[x - 1][y - 2] == ' ' &&
-			map[x - 1][y + 1] == ' ' &&
-			map[x - 1][y + 2] == ' '
-			) return true;
-	}
-	if (MY>0)//moving right
-	{
-		if (map[x][y + 3] == ' ' &&
-			map[x + 1][y + 2] == ' ' &&
-			map[x - 1][y + 2] == ' '
-			) return true;
-	}
-	else //moving left 
-	{
-		if (map[x][y - 3] == ' ' &&
-			map[x + 1][y - 2] == ' ' &&
-			map[x - 1][y - 2] == ' '
-			) return true;
 	}
 }
 Type Player::getenumType() const
 {
 	return Type::Player;
 }
-void Player::Attack(const Entity &entity)
+void Player::Attack(Entity &entity)
 {
 	if (entity.getenumType()==Type::Boss || entity.getenumType()==Type::Fatman)
 	{
-		if (getDistanceTo(entity)<=3)
+		if (getDistanceTo(entity)<=6)
 		{
-			entity.setHP(entity.getHP() - rand() % damage / 2 + int(damage / 2));
+			entity.setHP(entity.getHP() - (int(rand() % getDMG() / 2) + int(getDMG() / 2)));
 		}
 	}
 
 }
-const Entity * Player::clone() const
+Entity * Player::clone() const
 {
 	return new Player(*this);
 }
@@ -123,30 +153,22 @@ void Player::Interact()
 		clearAround(locX, locY - 4); Coins += 10;
 	}
 }
-void Draw(int x, int y)
+void Player::HuntPlayer(Entity & entity)
 {
-	map[x - 1][y] = 'O';
-	map[x][y] = '|';
-	map[x][y - 1] = '/';
-	map[x][y + 1] = char(92);
-	map[x + 1][y + 1] = char(92);
-	map[x + 1][y - 1] = '/';
-	map[x][y - 2] = '0';
-	map[x][y + 2] = '/';
+	assert(false);
 }
-void EmptySpace(int x, int y)
-{
-	map[x][y - 2] = ' ';
-	map[x][y - 1] = ' '; map[x + 1][y - 1] = ' ';
-	map[x - 1][y] = ' ';   map[x][y] = ' ';
-	map[x][y + 1] = ' '; map[x + 1][y + 1] = ' ';
-	map[x][y + 2] = ' ';
-}
-void clearAround(int x, int y)
-{
-	map[x][y - 1] = ' '; map[x + 1][y - 1] = ' ';
-	map[x - 1][y] = ' '; map[x][y] = ' ';
-	map[x][y + 1] = ' '; map[x + 1][y + 1] = ' ';
-	map[x + 1][y] = ' '; map[x - 1][y + 1] = ' '; map[x - 1][y - 1] = ' ';
 
+void Player::Spawn()
+{
+	Draw(locX, locY);
+}
+
+bool Player::isAlive()
+{
+	if (getHP() <= 0)
+	{
+		return false;
+		EmptySpaceP(locX, locY);
+	}
+	else return true;
 }

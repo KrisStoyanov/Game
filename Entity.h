@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <math.h>
-#include "Map.h"
+//#include "Map.h"
+#include <cassert>
 using namespace std;
 enum class Type
 {
@@ -25,7 +26,7 @@ public:
 	Entity();
 	Entity(const Type enumtype, int locx, int locy);
 	~Entity();
-	bool isAlive();
+	virtual bool isAlive()=0;
 	double getDistanceTo(const Entity &entity);
 	const void setDMG(int _damage);
 	const void setHP(int _health);
@@ -36,8 +37,11 @@ public:
 	int getY();
 	void setX(int locx);
 	void setY(int locy);
-	virtual void HuntPlayer(Entity &entity);
+	virtual void HuntPlayer(Entity &entity)=0;
 	virtual Type getenumType()const = 0;
-	virtual const Entity* clone()const = 0;
+	virtual Entity* clone()const = 0;
+	virtual void Spawn()=0;
 };
 
+extern char map[20][120];
+extern int Coins;

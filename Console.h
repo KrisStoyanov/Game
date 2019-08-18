@@ -3,23 +3,21 @@
 #define CONSOLE_H
 #include <stdlib.h>
 #include <windows.h>
-#include <math.h>
 #include <vector>
 #include "Entity.h"
 #include "Fatman.h"
-#include "Boss.h"
+#include   "Boss.h"
 #include "Player.h"
-
 class Console
 {
 public:
 	Console();
 	~Console();
-	void add(const Entity* entity);
-	const Entity* getAt(int index) const;
+	void add(Entity* entity);
+	Entity* getAt(int index);
 	void removeAt(int index);
 	int getSize() const;
 private:
-	vector<const Entity*> entities;
+	vector<Entity*> entities;
 };
 #endif // !CONSOLE_H
