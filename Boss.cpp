@@ -4,11 +4,11 @@
 //   | [,] |/   
 //    |   |     
 //    |   |     
-char boss[5][15] = { "    (^_^)|\\  ",
-				  "   |[# #]|-->",
-				  "   | [,] |/  ",
-				  "    | \" |    ",
-				  "    |   |    " };
+//char boss[5][12]={"  (^_^)|\\ ",
+//				  " |[# #]|-->",
+//				  " | [,] |/  ",
+//				  "  | \" |   ",
+//				  "  |   |    " };
 Boss::Boss()
 {
 }
@@ -19,7 +19,7 @@ double CompatableDistanceB(int locx, int locy, int X, int Y)
 {
 	return(sqrt(((locx - X)*(locx - X)) + ((locy - Y)*(locy - Y))));
 }
-void DrawBoss(int Xboss, int Yboss)
+void DrawBoss(int Xboss, int Yboss,char map[20][120])
 {
 	map[Xboss - 2][Yboss - 2] = '('; map[Xboss - 2][Yboss - 1] = '^'; map[Xboss - 2][Yboss] = '_'; map[Xboss - 2][Yboss + 1] = '^'; map[Xboss - 2][Yboss + 2] = ')'; map[Xboss - 2][Yboss + 3] = '|'; map[Xboss - 2][Yboss + 4] = char(92);
 	map[Xboss - 1][Yboss - 3] = '|'; map[Xboss - 1][Yboss - 2] = '['; map[Xboss - 1][Yboss - 1] = '#'; map[Xboss - 1][Yboss + 1] = '#'; map[Xboss - 1][Yboss + 2] = ']'; map[Xboss - 1][Yboss + 3] = '|'; map[Xboss - 1][Yboss + 4] = '-'; map[Xboss - 1][Yboss + 5] = '-'; map[Xboss - 1][Yboss + 6] = '>';
@@ -27,7 +27,7 @@ void DrawBoss(int Xboss, int Yboss)
 	map[Xboss + 1][Yboss - 2] = '|'; map[Xboss + 1][Yboss + 2] = '|';
 	map[Xboss + 2][Yboss - 2] = '|'; map[Xboss + 2][Yboss + 2] = '|';
 }
-void EmptySpaceB(int Xboss, int Yboss)
+void EmptySpaceB(int Xboss, int Yboss,char map[20][120])
 {
 	map[Xboss - 2][Yboss - 2] = ' '; map[Xboss - 2][Yboss - 1] = ' '; map[Xboss - 2][Yboss] = ' '; map[Xboss - 2][Yboss + 1] = ' '; map[Xboss - 2][Yboss + 2] = ' '; map[Xboss - 2][Yboss + 3] = ' '; map[Xboss - 2][Yboss + 4] =      ' ';
 	map[Xboss - 1][Yboss - 3] = ' '; map[Xboss - 1][Yboss - 2] = ' '; map[Xboss - 1][Yboss - 1] = ' '; map[Xboss - 1][Yboss + 1] = ' '; map[Xboss - 1][Yboss + 2] = ' '; map[Xboss - 1][Yboss + 3] = ' '; map[Xboss - 1][Yboss + 4] = ' '; map[Xboss - 1][Yboss + 5] = ' '; map[Xboss - 1][Yboss + 6] = ' ';
@@ -59,7 +59,7 @@ Entity * Boss::clone() const
 {
 	return new Boss(*this) ;
 }
-bool CanMoveB(int x, int y, int MX, int MY)
+bool CanMoveB(int x, int y, int MX, int MY,char map[20][120])
 {
 	if (MX == 1)//moving down
 	{
@@ -111,55 +111,57 @@ bool CanMoveB(int x, int y, int MX, int MY)
 }
 void Boss::Move(int x, int y)
 {
-	if (CanMoveB(locX,locY,x,y)==true)
+	if (CanMoveB(locX,locY,x,y,map)==true)
 	{
-		EmptySpaceB(locX, locY);
+		EmptySpaceB(locX, locY,map);
 		locX += x;
 		locY += y;
-		DrawBoss(locX, locY);
+		DrawBoss(locX, locY,map);
 	}
 }
 void Boss::HuntPlayer(Entity & entity)
 {
-	int playerX = entity.getX();
-	int playerY = entity.getY();
-	double starting_distance = getDistanceTo(entity);
-	while (isAlive())
+	if (getDistanceTo(entity) <= 15)
 	{
-		if (starting_distance > CompatableDistanceB(locX + 1, locY, entity.getX(), entity.getY()))
+		int playerX = entity.getX();
+		int playerY = entity.getY();
+		double starting_distance = getDistanceTo(entity);
+		while (isAlive())
 		{
-			Move(1, 0);
-			break;
-		}
-		if (starting_distance > CompatableDistanceB(locX - 1, locY, entity.getX(), entity.getY()))
-		{
-			Move(-1, 0);
-			break;
-		}
-		if (starting_distance > CompatableDistanceB(locX, locY + 1, entity.getX(), entity.getY()))
-		{
-			Move(0, 1);
-			break;
-		}
-		else
-		{
-			Move(0, -1);
-			break;
+			if (starting_distance > CompatableDistanceB(locX + 1, locY, entity.getX(), entity.getY()))
+			{
+				Move(1, 0);
+				break;
+			}
+			else if (starting_distance > CompatableDistanceB(locX - 1, locY, entity.getX(), entity.getY()))
+			{
+				Move(-1, 0);
+				break;
+			}
+			else if (starting_distance > CompatableDistanceB(locX, locY + 1, entity.getX(), entity.getY()))
+			{
+				Move(0, 1);
+				break;
+			}
+			else
+			{
+				Move(0, -1);
+				break;
+			}
 		}
 	}
 	Attack(entity);
 }
 void Boss::Spawn()
 {
-	DrawBoss(locX, locY);
+	DrawBoss(locX, locY,map);
 }
-
 bool Boss::isAlive()
 {
 	if (getHP() <= 0)
 	{
+		EmptySpaceB(locX, locY,map);
 		return false;
-		EmptySpaceB(locX, locY);
 	}
 	else return true;
 }

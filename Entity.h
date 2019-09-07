@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <math.h>
-//#include "Map.h"
 #include <cassert>
+#include <thread>
+#include "Maps.h"
 using namespace std;
 enum class Type
 {

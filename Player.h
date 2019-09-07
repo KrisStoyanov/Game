@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Maps.h"
 class Player:public Entity
 {
 private:
@@ -19,4 +20,3 @@ public:
 	void Spawn();
 	bool isAlive();
 };
-

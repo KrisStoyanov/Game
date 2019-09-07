@@ -1,25 +1,25 @@
 #include "Fatman.h"
-//   @   
-// /[0]\ 
-//  /`\  
+//   @       @ /
+// /[0]\ --v[0]
+//  /`\     < \ 
 Fatman::Fatman(){}
 Fatman::~Fatman(){}
 double CompatableDistanceF(int locx, int locy, int X, int Y)
 {
 	return(sqrt(((locx - X)*(locx - X)) + ((locy -Y)*(locy - Y))));
 }
-void DrawFatman(int X, int Y)
+void DrawFatman(int X, int Y, char map[20][120])
 {
 	map[X - 1][Y] = '@';
 	map[X][Y - 2] = '/'; map[X][Y - 1] = '[';   map[X][Y] = '0';   map[X][Y + 1] = ']'; map[X][Y + 2] = char(92);
 	map[X + 1][Y - 1] = '/'; map[X + 1][Y] = '`'; map[X + 1][Y + 1] = char(92);
 }
-void EmptySpaceF(int x, int y)
+void EmptySpaceF(int x, int y, char map[20][120])
 {
 						     map[x    ][y - 2] = ' ';
-	map[x    ][y - 1] = ' '; map[x + 1][y - 1] = ' ';
+							 map[x    ][y - 1] = ' '; map[x + 1][y - 1] = ' ';
 	map[x - 1][y    ] = ' '; map[x    ][y    ] = ' '; map[x + 1][y    ] = ' ';
-	map[x    ][y + 1] = ' '; map[x + 1][y + 1] = ' ';
+							 map[x    ][y + 1] = ' '; map[x + 1][y + 1] = ' ';
 						     map[x    ][y + 2] = ' ';
 }
 Fatman::Fatman(const Type enumtype, int locx, int locy):Entity(enumtype,locx,locy)
@@ -45,7 +45,7 @@ Entity * Fatman::clone() const
 {
 	return new Fatman(*this);
 }
-bool CanMoveF(int x, int y, int MX, int MY)
+bool CanMoveF(int x, int y, int MX, int MY,char map[20][120])
 {
 	if (MX == 1)//moving down
 	{
@@ -82,53 +82,60 @@ bool CanMoveF(int x, int y, int MX, int MY)
 }
 void Fatman::Move(int x, int y)
 {
-	if (CanMoveF(locX, locY, x, y))
+	if (CanMoveF(locX, locY, x, y,map))
 	{
-		EmptySpaceF(locX, locY);
+		EmptySpaceF(locX, locY,map);
 		this->locX = locX + x;
 		this->locY = locY + y;
-		DrawFatman(locX, locY);
+		DrawFatman(locX, locY,map);
 	}
 }
 void Fatman::HuntPlayer(Entity &entity)
 {
-	int playerX = entity.getX();
-	int playerY = entity.getY();
+	
+	if (getDistanceTo(entity)<=15)
+	{
 	double starting_distance = getDistanceTo(entity);
 	while (isAlive())
 	{
-		if (starting_distance >CompatableDistanceF(locX+1,locY,entity.getX(),entity.getY()))
+		if (starting_distance >CompatableDistanceF(locX+1,locY,entity.getX(),entity.getY()) )
 		{
 			Move(1, 0);
 			break;
+			//movement++;
 		}
-		if (starting_distance > CompatableDistanceF(locX - 1, locY, entity.getX(), entity.getY()))
+		else if (starting_distance > CompatableDistanceF(locX - 1, locY, entity.getX(), entity.getY()) )
 		{
 			Move(-1, 0);
 			break;
+			//movement++;
 		}
-		if (starting_distance > CompatableDistanceF(locX , locY+1, entity.getX(), entity.getY()))
+		else if (starting_distance > CompatableDistanceF(locX , locY+1, entity.getX(), entity.getY()) )
 		{
 			Move(0, 1);
 			break;
+			//movement++;
 		}
 		else
 		{	Move(0, -1);
 			break;
 		}
 	}
+	}
 		Attack(entity);
 }
 void Fatman::Spawn()
 {
-	DrawFatman(locX, locY);
+	DrawFatman(locX, locY,map);
 }
 bool Fatman::isAlive()
 {
 	if (getHP() <= 0)
 	{
+		PlaySound(TEXT("Dying.wav.wav"), NULL, SND_FILENAME);
+		Coins += 50;
+		EmptySpaceF(locX, locY,map);//clearing where the enemy was
 		return false;
-		EmptySpaceF(locX, locY);
 	}
 	else return true;
 }

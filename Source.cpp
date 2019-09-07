@@ -1,68 +1,71 @@
-#include <Windows.h>
 #include <iostream>
 #include "Console.h"
+#include <thread>
+#include <windows.h>
 using namespace std;
-int main()
-{
 
+int main()
+{	bool gamerunning = false;
 	bool bossISspawned = false;
-	Player P(Type::Player, 9, 9);
-	Fatman F1(Type::Fatman, 15, 15);
-	Fatman F2(Type::Fatman, 4, 22);
-	Fatman F3(Type::Fatman, 14, 55);
-	Fatman F4(Type::Fatman, 15, 105);
-	Boss B(Type::Boss, 10, 100);
+	cout << "Welcome to my new game!" << endl;
+	cout << "Please press a number between 1 and 4." << endl;
+	cout << "1.Start game" << endl;
+	cout << "2.Load saved game" << endl;
+	cout << "3.Options" << endl;
+	cout << "4.Exit" << endl;
+	int choice = 0;
+	cin >> choice;
+	switch (choice)
+	{
+	case 1: {gamerunning = true; break; }
+	case 2: //in progress
+	case 3: {}
+	case 4: {system("cls"); cout << "Thank you for playing !" << endl; Sleep(2000); return 0; break; }
+	}
 	Console console;
-	bool gamerunning = true;
-	console.add(&P);
-	console.add(&F1);
-	console.add(&F2);
-	console.add(&F3);
-	console.add(&F4);
+	console.ReplaceMap(1);
+	Player  P(Type::Player,  9,   6);
+	//Fatman F1(Type::Fatman, 15,  15);
+	//Fatman F2(Type::Fatman,  4,  22);
+	//Fatman F3(Type::Fatman, 14,  55);
+	//Fatman F4(Type::Fatman, 15,  75);
+	//Boss    B(Type::Boss  , 10, 100);
+	console.add(&P );
+	//console.add(&F1);
+	//console.add(&F2);
+	//console.add(&F3);
+	//console.add(&F4);
 	for (int i = 0; i < console.getSize(); i++)
 	{
 		console.getAt(i)->Spawn();
 	}
+	bool map_ = false;
 	while (gamerunning)
 	{
+
 		system("cls");
 		cout << "Your Health: " << P.getHP() << endl;
-		/*for (int i = 0; i < characterHP/10; i++)
-		{
-			cout << "% ";
-		}*/
-		cout << F1.getHP() << endl;
-		cout << F2.getHP() << endl;
-		cout << F3.getHP() << endl;
 		cout << endl;
 		cout << endl;
-		/*for (int i = 0; i < 5; i++)
+		console.PrintMap();
+		cout << endl;
+		cout << endl;
+		cout << "$ " << Coins << endl;
+		if (!P.isAlive())
 		{
-			for (int j = 0; j < 15; j++)
-			{
-				cout << boss[i][j];
-			}
-			cout << endl;
-		}*/
-		for (int i = 0; i < 20; i++)
-		{
-			for (int j = 0; j < 120; j++)
-			{
-				cout << map[i][j];
-			}
-			cout << endl;
+			gamerunning = false;
+			break;
 		}
-		cout << endl;
-		cout << endl;
-		cout << "Coins : " << Coins << endl;
-		system("pause>nul");
 		if (GetAsyncKeyState(0x45))
 		{
 			P.Interact();
 		}
-		if (!P.isAlive())
+		if (GetAsyncKeyState(0x41))//attack
 		{
-			gamerunning = false;
+			for (int i = 0; i < console.getSize(); i++)
+			{
+				P.Attack(*console.getAt(i));
+			}
 		}
 		if (GetAsyncKeyState(VK_UP))
 		{
@@ -75,17 +78,12 @@ int main()
 		if (GetAsyncKeyState(VK_LEFT))
 		{
 			P.Move(0, -1);
+			//P.Move(0, -1);
 		}
 		if (GetAsyncKeyState(VK_RIGHT))
 		{
 			P.Move(0, 1);
-		}
-		if (GetAsyncKeyState(0x41))
-		{
-			for (int i = 0; i < console.getSize(); i++)
-			{
-				P.Attack(*console.getAt(i));
-			}
+			//P.Move(0, 1);
 		}
 		for (int i = 1; i < console.getSize(); i++)
 		{
@@ -96,19 +94,20 @@ int main()
 		}
 		for (int i = 1; i < console.getSize(); i++)
 		{
-				console.getAt(i)->HuntPlayer(P);
+			  console.getAt(i)->HuntPlayer(P);
 		}
 		if (console.getSize() == 1 && bossISspawned == false)
 		{
+
 			bossISspawned = true;
-			console.add(&B);
+			//console.add(&B);
 		}
-		if (console.getSize() == 1)
+		/*if (console.getSize() == 1)
 		{
 			gamerunning = false;
 			cout << "Level Completed!" << endl;
 		}
+		Sleep(16);*/
 	}
 	system("pause");
 }
-
