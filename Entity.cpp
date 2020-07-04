@@ -1,27 +1,28 @@
 #include "Entity.h"
-int ID = 0;
 char map[20][120];
 Entity::Entity()
 {
 	health = 1;
 	damage = 0;
 }
-Entity::Entity(const Type _enumtype, int locx, int locy)
+Entity::Entity( int locx, int locy)
 {
-	id = ID; ID++;
 	locX = locx;
 	locY = locy;
-	enumtype = _enumtype;
 }
 Entity::~Entity()
 {
 }
-double Entity::getDistanceTo(const Entity &entity)
+double Entity::getDistanceTo(const Entity& entity)
 {
-	if (entity.locX!=NULL && entity.locY!=NULL)
+	if (entity.locX != NULL && entity.locY != NULL)
 	{
-		return(sqrt(((locX - entity.locX)*(locX - entity.locX)) + ((locY - entity.locY)*(locY - entity.locY))));
+		return(sqrt(((locX - entity.locX) * (locX - entity.locX)) + ((locY - entity.locY) * (locY - entity.locY))));
 	}
+}
+const void Entity::setType(Type GivenType)
+{
+	enumtype=GivenType;
 }
 const void Entity::setDMG(int _damage)
 {
@@ -46,12 +47,13 @@ int Entity::getY()
 }
 void Entity::setX(int locx)
 {
-	if (locx>1 && locx<20)locX = locx;
+	if (locx > 1 && locx < 20)locX = locx;
 }
 void Entity::setY(int locy)
 {
-	if(locy>1 && locy<120)locY = locy;
+	if (locy > 1 && locy < 120)locY = locy;
 }
+
 int Entity::getDMG()
 {
 	return damage;

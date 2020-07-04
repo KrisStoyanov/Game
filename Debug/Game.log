@@ -1,0 +1,3 @@
+﻿  Source.cpp
+D:\VisualStudio Content\C++ Content\Game\Source.cpp(272): warning C4715: 'Choice': not all control paths return a value
+  Game.vcxproj -> D:\VisualStudio Content\C++ Content\Game\Debug\Game.exe

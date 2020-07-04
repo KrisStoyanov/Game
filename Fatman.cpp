@@ -2,11 +2,11 @@
 //   @       @ /
 // /[0]\ --v[0]
 //  /`\     < \ 
-Fatman::Fatman(){}
-Fatman::~Fatman(){}
+Fatman::Fatman() {}
+Fatman::~Fatman() {}
 double CompatableDistanceF(int locx, int locy, int X, int Y)
 {
-	return(sqrt(((locx - X)*(locx - X)) + ((locy -Y)*(locy - Y))));
+	return(sqrt(((locx - X) * (locx - X)) + ((locy - Y) * (locy - Y))));
 }
 void DrawFatman(int X, int Y, char map[20][120])
 {
@@ -16,36 +16,34 @@ void DrawFatman(int X, int Y, char map[20][120])
 }
 void EmptySpaceF(int x, int y, char map[20][120])
 {
-						     map[x    ][y - 2] = ' ';
-							 map[x    ][y - 1] = ' '; map[x + 1][y - 1] = ' ';
-	map[x - 1][y    ] = ' '; map[x    ][y    ] = ' '; map[x + 1][y    ] = ' ';
-							 map[x    ][y + 1] = ' '; map[x + 1][y + 1] = ' ';
-						     map[x    ][y + 2] = ' ';
+	map[x][y - 2] = ' ';
+	map[x][y - 1] = ' '; map[x + 1][y - 1] = ' ';
+	map[x - 1][y] = ' '; map[x][y] = ' '; map[x + 1][y] = ' ';
+	map[x][y + 1] = ' '; map[x + 1][y + 1] = ' ';
+	map[x][y + 2] = ' ';
 }
-Fatman::Fatman(const Type enumtype, int locx, int locy):Entity(enumtype,locx,locy)
+Fatman::Fatman( int locx, int locy) :Entity( locx, locy)
 {
 	setDMG(5);
 	setHP(500);
+	setType(Type::Fatman);
 }
 Type Fatman::getenumType() const
 {
 	return Type::Fatman;
 }
-void Fatman::Attack(Entity &entity)
+void Fatman::Attack(Entity& entity)
 {
-	if (entity.getenumType()==Type::Player)
+	if (entity.getenumType() == Type::Player)
 	{
-		if (getDistanceTo(entity)<=5)
+		if (getDistanceTo(entity) <= 5)
 		{
 			entity.setHP(entity.getHP() - (int(rand() % getDMG() / 2) + int(getDMG() / 2)));
 		}
 	}
 }
-Entity * Fatman::clone() const
-{
-	return new Fatman(*this);
-}
-bool CanMoveF(int x, int y, int MX, int MY,char map[20][120])
+
+bool CanMoveF(int x, int y, int MX, int MY, char map[20][120])
 {
 	if (MX == 1)//moving down
 	{
@@ -82,60 +80,72 @@ bool CanMoveF(int x, int y, int MX, int MY,char map[20][120])
 }
 void Fatman::Move(int x, int y)
 {
-	if (CanMoveF(locX, locY, x, y,map))
+	if (CanMoveF(locX, locY, x, y, map))
 	{
-		EmptySpaceF(locX, locY,map);
+		EmptySpaceF(locX, locY, map);
 		this->locX = locX + x;
 		this->locY = locY + y;
-		DrawFatman(locX, locY,map);
+		DrawFatman(locX, locY, map);
 	}
 }
-void Fatman::HuntPlayer(Entity &entity)
+void Fatman::HuntPlayer(Entity& entity)
 {
-	
-	if (getDistanceTo(entity)<=15)
+
+	if (getDistanceTo(entity) <= 15)
 	{
-	double starting_distance = getDistanceTo(entity);
-	while (isAlive())
-	{
-		if (starting_distance >CompatableDistanceF(locX+1,locY,entity.getX(),entity.getY()) )
+		double starting_distance = getDistanceTo(entity);
+		while (isAlive())
 		{
-			Move(1, 0);
-			break;
-			//movement++;
-		}
-		else if (starting_distance > CompatableDistanceF(locX - 1, locY, entity.getX(), entity.getY()) )
-		{
-			Move(-1, 0);
-			break;
-			//movement++;
-		}
-		else if (starting_distance > CompatableDistanceF(locX , locY+1, entity.getX(), entity.getY()) )
-		{
-			Move(0, 1);
-			break;
-			//movement++;
-		}
-		else
-		{	Move(0, -1);
-			break;
+			if (starting_distance > CompatableDistanceF(locX + 1, locY, entity.getX(), entity.getY()))
+			{
+				Move(1, 0);
+				break;
+				//movement++;
+			}
+			else if (starting_distance > CompatableDistanceF(locX - 1, locY, entity.getX(), entity.getY()))
+			{
+				Move(-1, 0);
+				break;
+				//movement++;
+			}
+			else if (starting_distance > CompatableDistanceF(locX, locY + 1, entity.getX(), entity.getY()))
+			{
+				Move(0, 1);
+				break;
+				//movement++;
+			}
+			else
+			{
+				Move(0, -1);
+				break;
+			}
 		}
 	}
-	}
-		Attack(entity);
+	Attack(entity);
 }
 void Fatman::Spawn()
 {
-	DrawFatman(locX, locY,map);
+	DrawFatman(locX, locY, map);
 }
 bool Fatman::isAlive()
 {
 	if (getHP() <= 0)
 	{
-		PlaySound(TEXT("Dying.wav.wav"), NULL, SND_FILENAME);
+		//PlaySound(TEXT("Dying.wav.wav"), NULL, SND_FILENAME);
 		Coins += 50;
-		EmptySpaceF(locX, locY,map);//clearing where the enemy was
+		EmptySpaceF(locX, locY, map);//clearing where the enemy was
 		return false;
 	}
 	else return true;
 }
+
+void Fatman::Interact()
+{
+	assert(false);
+}
+//
+//void Fatman::Attack(Entity& entity)
+//{
+//	assert(false);
+//}
+//

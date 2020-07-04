@@ -1,0 +1,4 @@
+D:\C++ Content\Game\Debug\Game.exe
+D:\C++ Content\Game\Debug\Game.pdb
+D:\VisualStudio Content\C++ Content\Game\Debug\Game.exe
+D:\VisualStudio Content\C++ Content\Game\Debug\Game.pdb

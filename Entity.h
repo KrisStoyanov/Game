@@ -6,7 +6,10 @@
 #include <cassert>
 #include <thread>
 #include "Maps.h"
+extern char map[20][120];
+extern int Coins;
 using namespace std;
+
 enum class Type
 {
 	Fatman,
@@ -16,19 +19,19 @@ enum class Type
 class Entity
 {
 protected:
-	int id = 0;
 	int locX;
 	int locY;
-	int health=0;
+	int health = 0;
 	int damage = 0;
 	Type enumtype;
 
 public:
 	Entity();
-	Entity(const Type enumtype, int locx, int locy);
+	Entity( int locx, int locy);
 	~Entity();
-	virtual bool isAlive()=0;
-	double getDistanceTo(const Entity &entity);
+	virtual bool isAlive() = 0;
+	double getDistanceTo(const Entity& entity);
+	const void setType(Type GivenType);
 	const void setDMG(int _damage);
 	const void setHP(int _health);
 	virtual void Move(int x, int y);
@@ -38,11 +41,10 @@ public:
 	int getY();
 	void setX(int locx);
 	void setY(int locy);
-	virtual void HuntPlayer(Entity &entity)=0;
+	virtual void HuntPlayer(Entity& entity) = 0;
+	virtual void Interact() = 0;
+	virtual void Attack(Entity& entity) = 0;
 	virtual Type getenumType()const = 0;
-	virtual Entity* clone()const = 0;
-	virtual void Spawn()=0;
+	virtual void Spawn() = 0;
 };
 
-extern char map[20][120];
-extern int Coins;

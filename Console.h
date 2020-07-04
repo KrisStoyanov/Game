@@ -6,9 +6,11 @@
 #include <vector>
 #include "Entity.h"
 #include "Fatman.h"
-#include   "Boss.h"
+#include "Boss.h"
 #include "Player.h"
 #include "Maps.h"
+
+
 class Console
 {
 public:
@@ -20,8 +22,12 @@ public:
 	int getSize() const;
 	void ReplaceMap(int index);
 	void PrintMap();
+	void PrintMenu();
+	void SpawnEntities(int Map);
+	void ClearDeadEntities();
+	void EntitiesAttackPlayer();
+	void SpawnBoss(int Map);
 private:
 	vector<Entity*> entities;
-	char map[20][120];
-};
 #endif // !CONSOLE_H
+};
